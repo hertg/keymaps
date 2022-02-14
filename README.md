@@ -22,5 +22,17 @@ Flash a connected keyboard that is in DFU bootloader
 make cradio:hertg:dfu-split-left
 ```
 
+## Useful commands
+Generate a JSON export of the keymap.
+```shell
+# example
+qmk c2json -kb cradio -km colemak-dh-swiss cradio/colemak-dh-swiss/keymap.c > keymap.json
+```
+
+Generate `keymap.c` file from JSON export
+```shell
+qmk json2c keymap.json > keymap.c
+```
+
 ## Resources
 - [Separate keymap repo for QMK](https://medium.com/@patrick.elmquist/separate-keymap-repo-for-qmk-136ff5a419bd) (medium.com)
