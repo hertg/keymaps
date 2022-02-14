@@ -19,7 +19,7 @@ make cradio:colemak-dh-swiss
 Flash a connected keyboard that is in DFU bootloader
 ```shell
 # make <keyboard>:<keymap>:dfu-split-left
-make cradio:hertg:dfu-split-left
+make cradio:colemak-dh-swiss:dfu-split-left
 ```
 
 ## Useful commands
