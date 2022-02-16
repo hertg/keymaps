@@ -1,7 +1,5 @@
 /* Copyright 2018-2021
- * ENDO Katsuhiro <ka2hiro@curlybracket.co.jp>
- * David Philip Barr <@davidphilipbarr>
- * Pierre Chevalier <pierrechevalier83@gmail.com>
+ * Michael Hertig <@hertg>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,33 +17,72 @@
 
 #include QMK_KEYBOARD_H
 
-/* Base layer 0 layout uses home row mods. See the following guide for details:
- * https://precondition.github.io/home-row-mods
- */
+#define CH_AUML KC_QUOT       // ä umlaut
+#define CH_OUML KC_SCLN       // ö umlaut
+#define CH_UUML KC_LBRC       // ü umlaut
+#define CH_QUOT KC_MINS       // ' quote
+#define CH_CIRC KC_EQL        // ^ circumflex
+#define CH_TRMA KC_RBRC       // ¨ trema
+#define CH_DLR  KC_NUHS       // $ dollar sign
+#define CH_MINS KC_SLSH       // - minus sign
+#define CH_LT   KC_NUBS       // < lower than
+#define CH_PLUS LSFT(KC_1)    // + plus sign
+#define CH_DQT  LSFT(KC_2)    // " double quote
+#define CH_ASTR LSFT(KC_3)    // * asterisk
+#define CH_CCDL LSFT(KC_4)    // ç c with cedill
+#define CH_PERC LSFT(KC_5)    // % percent
+#define CH_AMPR LSFT(KC_6)    // & ampersand
+#define CH_SLSH LSFT(KC_7)    // / slash
+#define CH_LPRN LSFT(KC_8)    // ( left parentheses
+#define CH_RPRN LSFT(KC_9)    // ) right parentheses
+#define CH_EQL  LSFT(KC_0)    // = equal sign
+#define CH_QUES LSFT(CH_QUOT) // ? question mark
+#define CH_GRV  LSFT(CH_CIRC) // ` grave
+#define CH_EXLM LSFT(CH_TRMA) // ! exclamation mark
+#define CH_GT   LSFT(CH_LT)   // > greater than
+#define CH_SCLN LSFT(KC_COMM) // ; semicolon
+#define CH_COLN LSFT(KC_DOT)  // : colon
+#define CH_UNDS LSFT(CH_MINS) // _ underscore
+#define CH_AT   RALT(KC_2)    // @ at
+#define CH_HASH RALT(KC_3)    // # hash
+#define CH_PIPE RALT(KC_7)    // | pipe
+#define CH_BTCK RALT(CH_QUOT) // ´ backtick
+#define CH_TILD RALT(CH_CIRC) // ~ tilde
+#define CH_LBRC RALT(CH_UUML) // [ left bracket
+#define CH_RBRC RALT(CH_TRMA) // ] right bracket
+#define CH_LCBR RALT(CH_AUML) // { left curly bracket
+#define CH_RCBR RALT(CH_DLR)  // } right curly bracket
+#define CH_BSLS RALT(CH_LT)   // \ backslash
+
+#define CH_A    MT(CH_AUML, KC_A)   // a when tapped, ä when held
+#define CH_O    MT(CH_OUML, KC_O)   // o when tapped, ö when held
+#define CH_U    MT(CH_UUML, KC_U)   // u when tapped, ü when held
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    // Colemak-DH Swiss
     [0] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,        /**/         KC_J,    KC_L,    KC_U,    KC_Z,    KC_BSPC,
-        KC_A,    KC_R,    KC_S,    KC_T,    KC_G,        /**/         KC_M,    KC_N,    KC_E,    KC_I,    KC_O,
+        KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,        /**/         KC_J,    KC_L,    CH_U,    KC_Z,    KC_BSPC,
+        CH_A,    KC_R,    KC_S,    KC_T,    KC_G,        /**/         KC_M,    KC_N,    KC_E,    KC_I,    CH_O,
         KC_Y,    KC_X,    KC_C,    KC_D,    KC_V,        /**/         KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH,
     //  -------------------------------------------------/**/--------------------------------------------------------
         KC_SPC,   OSM(MOD_LSFT),                         /**/         OSM(MOD_RCTL),  TO(1)
     //  -------------------------------------------------/**/--------------------------------------------------------
     ),
 
-
+    // Navigation / Controls
     [1] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
+        KC_TAB,  _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
+        KC_ESC,  _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
     //  -------------------------------------------------/**/--------------------------------------------------------
-        TO(0),   _______,                           /**/           _______,  TO(2)
+        TO(0),   _______,                                      _______,  TO(2)
     //  -------------------------------------------------/**/--------------------------------------------------------
     ),
 
 
+    // Symbols
     [2] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
@@ -57,13 +94,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 
+    // GAMING
     [3] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
+        KC_TAB,  KC_G,    KC_Y,    KC_E,    KC_R,        /**/      _______, _______, _______, _______, _______,
+        MOD_LSFT,KC_A,    KC_W,    KC_D,    KC_F,        /**/      _______, _______, _______, _______, _______,
+        KC_X,    KC_Q,    KC_S,    KC_C,    KC_V,        /**/      _______, _______, _______, _______, _______,
     //  -------------------------------------------------/**/--------------------------------------------------------
-        TO(0),   _______,                           /**/           _______, _______
+        TO(0),   MOD_LSFT,                               /**/      _______, _______
     //  -------------------------------------------------/**/--------------------------------------------------------
     ),
 
