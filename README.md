@@ -36,5 +36,5 @@ qmk json2c keymap.json > keymap.c
 
 ## Resources
 - [Separate keymap repo for QMK](https://medium.com/@patrick.elmquist/separate-keymap-repo-for-qmk-136ff5a419bd) (medium.com)
-- [The T-34 keyboard layout](https://www.jonashietala.se/blog/2021/06/03/the-t-34-keyboard-layout/) (www.jonashietala.se)
+- [The T-34 keyboard layout](https://www.jonashietala.se/blog/2021/06/03/the-t-34-keyboard-layout/) (jonashietala.se)
 - [callum-oakley/qmk_firmware](https://github.com/callum-oakley/qmk_firmware/tree/master/users/callum) (github.com)

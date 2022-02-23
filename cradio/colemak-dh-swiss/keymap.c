@@ -36,6 +36,10 @@
 #define TH_O LT(0, CH_O)
 #define TH_U LT(0, CH_U)
 
+// temporary solution for software caps/escape swap
+#define C_CAPS KC_ESC
+#define C_ESC KC_CAPS
+
 enum layers {
     DEF,
     SYM,
@@ -48,8 +52,10 @@ enum keycodes {
     HEY = SAFE_RANGE,
     OS_SHFT,
     OS_CTRL,
-    OS_ALT,
+    OS_LALT,
+    OS_RALT,
     OS_GUI,
+    CAP_G,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -64,23 +70,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //  -------------------------------------------------/**/--------------------------------------------------------
     ),
 
+    // : . / , " ( $ ) ' [ - _ % = } * > { ] # ? : < ~ ! \ + @ & | ` ^
+
     // Symbols
     [SYM] = LAYOUT_split_3x5_2(
-    //  -------------------------------------------------/**/--------------------------------------------------------
-        _______, KC_TAB,  _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
-        KC_ESC,  _______, _______, _______, _______,     /**/      _______, OS_GUI,  OS_ALT,  OS_CTRL, OS_SHFT,
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
+    //  ----------------------------------------------o---/**/--------------------------------------------------------
+        _______, _______, _______, _______, _______,     /**/      CH_QUOT, CH_DQUO, CH_SLSH, CH_PERC, CH_EQL,
+        _______, _______, _______, _______, _______,     /**/      _______, OS_GUI,  OS_CTRL, OS_SHFT, OS_LALT,
+        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, OS_RALT,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                          _______,  _______
     //  -------------------------------------------------/**/--------------------------------------------------------
     ),
-
+    
 
     // Navigation / Controls
     [NAV] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        KC_TAB,  _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
-        OS_SHFT, OS_CTRL, OS_ALT,  OS_GUI,  _______,     /**/      _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,
+        C_ESC,   KC_TAB,  C_CAPS,  _______, _______,     /**/      _______, _______, _______, _______, _______,
+        OS_LALT, OS_SHFT, OS_CTRL, OS_GUI,  _______,     /**/      KC_ENT,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,
         _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                /**/      _______, _______
@@ -91,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [NUM] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______, _______, _______, _______,     /**/      _______, KC_7,    KC_8,    KC_9,    _______,
-        _______, _______, _______, _______, _______,     /**/      _______, KC_1,    KC_2,    KC_3,    KC_0,
+        _______, _______, _______, _______, _______,     /**/      CAP_G,   KC_1,    KC_2,    KC_3,    KC_0,
         _______, _______, _______, _______, _______,     /**/      _______, KC_4,    KC_5,    KC_6,    _______,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                /**/      _______, _______
@@ -132,7 +140,8 @@ bool is_oneshot_ignored_key(uint16_t keycode) {
     case KC_LSFT:
     case OS_SHFT:
     case OS_CTRL:
-    case OS_ALT:
+    case OS_LALT:
+    case OS_RALT:
     case OS_GUI:
         return true;
     default:
@@ -142,7 +151,8 @@ bool is_oneshot_ignored_key(uint16_t keycode) {
 
 oneshot_state os_shft_state = os_up_unqueued;
 oneshot_state os_ctrl_state = os_up_unqueued;
-oneshot_state os_alt_state = os_up_unqueued;
+oneshot_state os_lalt_state = os_up_unqueued;
+oneshot_state os_ralt_state = os_up_unqueued;
 oneshot_state os_gui_state = os_up_unqueued;
 
 // change the hold function
@@ -163,11 +173,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return intercept_hold(record, CH_ODIA);
         case TH_U:
             return intercept_hold(record, CH_UDIA);
+        case CAP_G:
+            if (record->event.pressed) {
+                tap_code16(S(CH_G));
+            }
+            return false;
     }
 
     update_oneshot(&os_shft_state, KC_LSFT, OS_SHFT, keycode, record);
     update_oneshot(&os_ctrl_state, KC_LCTL, OS_CTRL, keycode, record);
-    update_oneshot(&os_alt_state, KC_LALT, OS_ALT, keycode, record);
+    update_oneshot(&os_lalt_state, KC_LALT, OS_LALT, keycode, record);
+    update_oneshot(&os_ralt_state, KC_RALT, OS_RALT, keycode, record);
     update_oneshot(&os_gui_state, KC_LGUI, OS_GUI, keycode, record);
 
     return true;
