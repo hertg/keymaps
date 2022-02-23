@@ -24,6 +24,8 @@
 #include "keymap_german_ch.h"       // https://github.com/qmk/qmk_firmware/blob/master/quantum/keymap_extras/keymap_german_ch.h
 #include "sendstring_german_ch.h"   // https://github.com/qmk/qmk_firmware/blob/master/quantum/keymap_extras/sendstring_german_ch.h
 
+#include "oneshot.h"
+
 // layer
 #define LA_SYM MO(SYM)
 #define LA_NAV MO(NAV)
@@ -44,17 +46,21 @@ enum layers {
 
 enum keycodes {
     HEY = SAFE_RANGE,
+    OS_SHFT,
+    OS_CTRL,
+    OS_ALT,
+    OS_GUI,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Colemak-DH Swiss
     [DEF] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        CH_Q,    CH_W,    CH_F,    CH_P,    CH_B,        /**/         CH_J,    CH_L,    TH_U,    CH_Z,    KC_BSPC,
+        CH_Q,    CH_W,    CH_F,    CH_P,    CH_B,        /**/         CH_J,    CH_L,    TH_U,    CH_Y,    KC_BSPC,
         TH_A,    CH_R,    CH_S,    CH_T,    CH_G,        /**/         CH_M,    CH_N,    CH_E,    CH_I,    TH_O,
-        CH_Y,    CH_X,    CH_C,    CH_D,    CH_V,        /**/         CH_K,    CH_H,    CH_COMM, CH_DOT,  CH_SLSH,
+        CH_Z,    CH_X,    CH_C,    CH_D,    CH_V,        /**/         CH_K,    CH_H,    CH_COMM, CH_DOT,  CH_MINS,
     //  -------------------------------------------------/**/--------------------------------------------------------
-        MO(NAV), KC_LSFT,                                /**/         KC_SPC,  MO(SYM)
+        LA_NAV,  KC_LSFT,                                /**/         KC_SPC,  LA_SYM
     //  -------------------------------------------------/**/--------------------------------------------------------
     ),
 
@@ -105,6 +111,40 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
+// ---
+
+bool is_oneshot_cancel_key(uint16_t keycode) {
+    switch (keycode) {
+    case LA_SYM:
+    case LA_NAV:
+    case LA_GAM:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool is_oneshot_ignored_key(uint16_t keycode) {
+    switch (keycode) {
+    case LA_SYM:
+    case LA_NAV:
+    case LA_GAM:
+    case KC_LSFT:
+    case OS_SHFT:
+    case OS_CTRL:
+    case OS_ALT:
+    case OS_GUI:
+        return true;
+    default:
+        return false;
+    }
+}
+
+oneshot_state os_shft_state = os_up_unqueued;
+oneshot_state os_ctrl_state = os_up_unqueued;
+oneshot_state os_alt_state = os_up_unqueued;
+oneshot_state os_gui_state = os_up_unqueued;
+
 // change the hold function
 // https://docs.qmk.fm/#/mod_tap?id=changing-hold-function
 bool intercept_hold(keyrecord_t *record, uint16_t keycode) {
@@ -113,7 +153,7 @@ bool intercept_hold(keyrecord_t *record, uint16_t keycode) {
         return false;
     }
     return true;
-}qqaarräaaassssssäaaaaaa a   aaaaarrrrststsrstt
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -124,6 +164,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case TH_U:
             return intercept_hold(record, CH_UDIA);
     }
+
+    update_oneshot(&os_shft_state, KC_LSFT, OS_SHFT, keycode, record);
+    update_oneshot(&os_ctrl_state, KC_LCTL, OS_CTRL, keycode, record);
+    update_oneshot(&os_alt_state, KC_LALT, OS_ALT, keycode, record);
+    update_oneshot(&os_gui_state, KC_LGUI, OS_GUI, keycode, record);
+
     return true;
 }
 
@@ -135,28 +181,8 @@ void matrix_scan_user(void) {
     // can be used for timers
 }
 
-
-/*bool is_oneshot_cancel_key(uint16_t keycode) {
-    switch (keycode) {
-    case LA_SYM:
-    case LA_NAV:
-        return true;
-    default:
-        return false;
-    }
+// https://docs.qmk.fm/#/custom_quantum_functions?id=example-layer_state_set_-implementation
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // https://docs.qmk.fm/#/ref_functions?id=update_tri_layer_statestate-x-y-z
+    return update_tri_layer_state(state, SYM, NAV, NUM);
 }
-
-bool is_oneshot_ignored_key(uint16_t keycode) {
-    switch (keycode) {
-    case LA_SYM:
-    case LA_NAV:
-    case KC_LSFT:
-    case OS_SHFT:
-    case OS_CTRL:
-    case OS_ALT:
-    case OS_CMD:
-        return true;
-    default:
-        return false;
-    }
-}*/
