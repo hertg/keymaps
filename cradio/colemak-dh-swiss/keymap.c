@@ -75,9 +75,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Symbols
     [SYM] = LAYOUT_split_3x5_2(
     //  ----------------------------------------------o---/**/--------------------------------------------------------
-        _______, _______, _______, _______, _______,     /**/      CH_QUOT, CH_DQUO, CH_SLSH, CH_PERC, CH_EQL,
-        _______, _______, _______, _______, _______,     /**/      _______, OS_GUI,  OS_CTRL, OS_SHFT, OS_LALT,
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, OS_RALT,
+        CH_TILD, CH_HASH, CH_BSLS, CH_AMPR, CH_PIPE,     /**/      CH_AT,   CH_QUOT, CH_SLSH, CH_PERC, CH_EQL,
+        CH_LCBR, CH_RCBR, CH_LPRN, CH_RPRN, CH_CIRC,     /**/      CH_DQUO, OS_GUI,  OS_CTRL, OS_SHFT, OS_LALT,
+        CH_LABK, CH_RABK, CH_LBRC, CH_RBRC, CH_DLR,      /**/      CH_EXLM, CH_QUES, CH_PLUS, CH_ASTR, OS_RALT,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                          _______,  _______
     //  -------------------------------------------------/**/--------------------------------------------------------
