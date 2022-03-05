@@ -66,30 +66,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         TH_A,    CH_R,    CH_S,    CH_T,    CH_G,        /**/         CH_M,    CH_N,    CH_E,    CH_I,    TH_O,
         CH_Z,    CH_X,    CH_C,    CH_D,    CH_V,        /**/         CH_K,    CH_H,    CH_COMM, CH_DOT,  CH_MINS,
     //  -------------------------------------------------/**/--------------------------------------------------------
-        LA_NAV,  KC_LSFT,                                /**/         KC_SPC,  LA_SYM
+        LA_SYM,  KC_LSFT,                                /**/         KC_SPC,  LA_NAV
     //  -------------------------------------------------/**/--------------------------------------------------------
     ),
 
     // : . / , " ( $ ) ' [ - _ % = } * > { ] # ? : < ~ ! \ + @ & | ` ^
 
-    // Symbols
+    // Controls / Symbols
+    // missing: § ° ´ `
+    // unnecessary: £ € ç ¬ ¢ ¨
     [SYM] = LAYOUT_split_3x5_2(
-    //  ----------------------------------------------o---/**/--------------------------------------------------------
-        CH_TILD, CH_HASH, CH_BSLS, CH_AMPR, CH_PIPE,     /**/      CH_AT,   CH_QUOT, CH_SLSH, CH_PERC, CH_EQL,
-        CH_LCBR, CH_RCBR, CH_LPRN, CH_RPRN, CH_CIRC,     /**/      CH_DQUO, OS_GUI,  OS_CTRL, OS_SHFT, OS_LALT,
-        CH_LABK, CH_RABK, CH_LBRC, CH_RBRC, CH_DLR,      /**/      CH_EXLM, CH_QUES, CH_PLUS, CH_ASTR, OS_RALT,
+    //  -------------------------------------------------/**/--------------------------------------------------------
+        C_ESC,   KC_TAB,  C_CAPS,  _______, _______,     /**/      CH_AT,   CH_QUOT, CH_SLSH, CH_PERC, CH_EQL,
+        OS_LALT, OS_SHFT, OS_CTRL, OS_GUI,  _______,     /**/      CH_DQUO, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______,     /**/      CH_EXLM, CH_QUES, CH_PLUS, CH_ASTR, _______,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                          _______,  _______
     //  -------------------------------------------------/**/--------------------------------------------------------
     ),
-    
 
-    // Navigation / Controls
+    // Symbols / Navigation
     [NAV] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        C_ESC,   KC_TAB,  C_CAPS,  _______, _______,     /**/      _______, _______, _______, _______, _______,
-        OS_LALT, OS_SHFT, OS_CTRL, OS_GUI,  _______,     /**/      KC_ENT,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
+        CH_TILD, CH_HASH, CH_BSLS, CH_AMPR, CH_PIPE,     /**/      _______, _______, _______, _______, _______,
+        CH_LCBR, CH_RCBR, CH_LPRN, CH_RPRN, CH_CIRC,     /**/      KC_ENT,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,
+        CH_LABK, CH_RABK, CH_LBRC, CH_RBRC, CH_DLR,      /**/      _______, _______, _______, _______, _______,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                /**/      _______, _______
     //  -------------------------------------------------/**/--------------------------------------------------------
@@ -155,6 +156,8 @@ oneshot_state os_lalt_state = os_up_unqueued;
 oneshot_state os_ralt_state = os_up_unqueued;
 oneshot_state os_gui_state = os_up_unqueued;
 
+
+
 // change the hold function
 // https://docs.qmk.fm/#/mod_tap?id=changing-hold-function
 bool intercept_hold(keyrecord_t *record, uint16_t keycode) {
@@ -165,14 +168,26 @@ bool intercept_hold(keyrecord_t *record, uint16_t keycode) {
     return true;
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+uint16_t hold_convert(uint16_t keycode) {
     switch (keycode) {
         case TH_A:
-            return intercept_hold(record, CH_ADIA);
+            return CH_ADIA;
         case TH_O:
-            return intercept_hold(record, CH_ODIA);
+            return CH_ODIA;
         case TH_U:
-            return intercept_hold(record, CH_UDIA);
+            return CH_UDIA;
+    }
+    // else; return original keycode
+    return keycode;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    //bool shift_pressed = get_mods() & MOD_BIT(KC_LSFT);
+    switch (keycode) {
+        case TH_A:
+        case TH_O:
+        case TH_U:
+            return intercept_hold(record, hold_convert(keycode));
         case CAP_G:
             if (record->event.pressed) {
                 tap_code16(S(CH_G));
