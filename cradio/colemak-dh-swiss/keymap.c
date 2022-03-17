@@ -49,13 +49,20 @@ enum layers {
 };
 
 enum keycodes {
-    HEY = SAFE_RANGE,
-    OS_SHFT,
+    OS_SHFT = SAFE_RANGE,
     OS_CTRL,
     OS_LALT,
     OS_RALT,
     OS_GUI,
     CAP_G,
+    C_NW, // next window
+    C_PW, // previous window
+    C_WI, // window increase
+    C_WD, // window decrease
+    C_NL, // next layout
+    C_OT, // open terminal
+    C_OL, // open launcher
+    C_CW, // close window
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -77,9 +84,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // unnecessary: £ € ç ¬ ¢ ¨
     [SYM] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        C_ESC,   KC_TAB,  C_CAPS,  _______, _______,     /**/      CH_AT,   CH_QUOT, CH_BSLS, CH_EXLM, CH_HASH,
-        OS_LALT, OS_SHFT, OS_CTRL, OS_GUI,  _______,     /**/      CH_AMPR, CH_DQUO, CH_SLSH, CH_QUES, CH_EQL,
-        _______, _______, _______, _______, _______,     /**/      CH_PERC, CH_PIPE, CH_PLUS, CH_ASTR, CH_TILD,
+        C_ESC,   KC_TAB,  C_CAPS,  KC_DEL,  KC_PSCR,     /**/      CH_AT,   CH_QUOT, CH_BSLS, CH_EXLM, CH_HASH,
+        OS_LALT, OS_SHFT, OS_CTRL, OS_GUI,  KC_ENT,      /**/      CH_AMPR, CH_DQUO, CH_SLSH, CH_QUES, CH_EQL,
+        KC_PGDN, KC_PGUP, KC_INS,  KC_HOME, KC_END,      /**/      CH_PERC, CH_PIPE, CH_PLUS, CH_ASTR, CH_TILD,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                          _______,  _______
     //  -------------------------------------------------/**/--------------------------------------------------------
@@ -88,9 +95,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Symbols / Navigation
     [NAV] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        _______, _______, _______, _______, _______,     /**/      _______, _______, _______, _______, _______,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,     /**/      C_NL,    C_WD,    C_PW,    C_NW,    C_WI,  
         CH_LCBR, CH_RCBR, CH_LPRN, CH_RPRN, CH_CIRC,     /**/      KC_ENT,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,
-        CH_LABK, CH_RABK, CH_LBRC, CH_RBRC, CH_DLR,      /**/      _______, _______, _______, _______, _______,
+        CH_LABK, CH_RABK, CH_LBRC, CH_RBRC, CH_DLR,      /**/      XXXXXXX, C_OL,    C_OT,    C_CW,    XXXXXXX,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                /**/      _______, _______
     //  -------------------------------------------------/**/--------------------------------------------------------
@@ -99,9 +106,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Numbers
     [NUM] = LAYOUT_split_3x5_2(
     //  -------------------------------------------------/**/--------------------------------------------------------
-        _______, _______, _______, _______, _______,     /**/      _______, KC_7,    KC_8,    KC_9,    _______,
-        _______, _______, _______, _______, _______,     /**/      CAP_G,   KC_1,    KC_2,    KC_3,    KC_0,
-        _______, _______, _______, _______, _______,     /**/      _______, KC_4,    KC_5,    KC_6,    _______,
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   XXXXXXX,     /**/      XXXXXXX, KC_7,    KC_8,    KC_9,    XXXXXXX,
+        KC_F5,   KC_F6,   KC_F7,   KC_F8,   XXXXXXX,     /**/      CAP_G,   KC_1,    KC_2,    KC_3,    KC_0,
+        KC_F9,   KC_F10,  KC_F11,  KC_F12,  XXXXXXX,     /**/      XXXXXXX, KC_4,    KC_5,    KC_6,    XXXXXXX,
     //  -------------------------------------------------/**/--------------------------------------------------------
         _______, _______,                                /**/      _______, _______
     //  -------------------------------------------------/**/--------------------------------------------------------
@@ -191,6 +198,46 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CAP_G:
             if (record->event.pressed) {
                 tap_code16(S(CH_G));
+            }
+            return false;
+        case C_NW:
+            if (record->event.pressed) {
+                tap_code16(G(CH_K));
+            }
+            return false;
+        case C_PW:
+            if (record->event.pressed) {
+                tap_code16(G(CH_J));
+            }
+            return false;
+        case C_WI:
+            if (record->event.pressed) {
+                tap_code16(G(CH_L));
+            }
+            return false;
+        case C_WD:
+            if (record->event.pressed) {
+                tap_code16(G(CH_H));
+            }
+            return false;
+        case C_NL:
+            if (record->event.pressed) {
+                tap_code16(G(KC_SPC));
+            }
+            return false;
+        case C_OL:
+            if (record->event.pressed) {
+                tap_code16(G(CH_P));
+            }
+            return false;
+        case C_OT:
+            if (record->event.pressed) {
+                tap_code16(G(S(KC_ENT)));
+            }
+            return false;
+        case C_CW:
+            if (record->event.pressed) {
+                tap_code16(G(S(CH_C)));
             }
             return false;
     }
